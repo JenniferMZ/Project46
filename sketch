@@ -1,0 +1,98 @@
+// ******** TRANSMITTER SKETCH
+// Project 46 - Creating a Wireless Remote Control, Transmitter Sketch
+
+#include <VirtualWire.h>
+uint8_t buf[VW MAX MESSAGE LEN];
+uint8_t buflen = VW MAX MESSAGE LEN;
+
+
+const char *on2 = "a";
+const char *off2 = "b";
+const char *on3 = "c";
+const char *off3 = "d";
+
+
+void setup()
+{
+  vw_set_ptt_inverted (true);
+  vw_setup (300);
+  vw_set_tx_pin (8);
+  pinMode (2, INPUT);
+  pinMode (3, INPUT);
+}
+
+
+void loop()
+{
+  if (digitalRead (2) == HIGH)
+  {
+    vw_send ((uint8_1 *) on2, strlen (on2));
+    vw_wait_tx();
+    delay (200);
+  }
+
+  if (digitalRead (2) == LOW)
+  {
+    vw_send ((uint8_t *) off2, strlen (off2));
+    vw_wait_tx();
+    delay (200);
+  }
+
+  if (digitalRead (3) == HIGH)
+  {
+    vw_send ((uint8_t *) on3, strlen (on3));
+    vw_wait_tx();
+    delay (200);
+  }
+
+  if (digitalRead (3) == LOW)
+  {
+    vw_send ((uint8_t *) off3, strlen (off3));
+    vw_wait_tx();
+    delay (200);
+  }
+}
+
+
+
+// ******** RECEIVER SKETCH
+// Project 46 - Creating a Wireless Remote Control, Receiver Sketch
+
+#include <VirtualWire.h>
+uint8_t buf[VW MAX MESSAGE LEN];
+uint8_t buflen = VW MAX MESSAGE LEN;
+
+void setup()
+{
+  vw_set_ptt_inverted (true);
+  vw_setup (300);
+  vw_set_rx_pin (8);
+  vw_rx_start();
+  pinMode (6, OUTPUT);
+  pinMode (7, OUTPUT);
+}
+
+void loop()
+{
+  if (vs_get_message (buf, &buflen))
+  {
+    switch (buf [0])
+    {
+      case 'a':
+      digitalWrite (6, HIGH);
+      break;
+
+      case 'b':
+      digitalWrite (6, LOW);
+      break;
+
+      case 'c':
+      digitalWrite (7, HIGH);
+      break;
+
+      case 'd':
+      digitalWrite (7, LOW);
+      break;
+      }
+    }
+}
